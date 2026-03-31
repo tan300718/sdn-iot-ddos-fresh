@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDoS Detection Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .status {
+            font-size: 24px;
+            margin: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .normal {
+            background-color: #16a34a;
+        }
+
+        .attack {
+            background-color: #dc2626;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        async function fetchData() {
+            const res = await fetch('/data');
+            const data = await res.json();
+
+            const statusEl = document.getElementById("status");
+
+            if (data.prediction == 1) {
+                statusEl.innerText = "🚨 ATTACK DETECTED";
+                statusEl.className = "status attack";
+            } else {
+                statusEl.innerText = "✅ NORMAL TRAFFIC";
+                statusEl.className = "status normal";
+            }
+
+            document.getElementById("pkts").innerText = Math.round(data.pkts_per_sec || 0);
+            document.getElementById("bytes").innerText = Math.round(data.bytes_per_sec || 0);
+            document.getElementById("avg").innerText = Math.round(data.avg_pkt_size || 0);
+            document.getElementById("src").innerText = data.src_ip_count || 0;
+        }
+
+        setInterval(fetchData, 2000);
+    </script>
+</head>
+
+<body>
+
+<h1>🛡️ SDN IoT DDoS Detection Dashboard</h1>
+
+<div id="status" class="status normal">WAITING...</div>
+
+<div class="container">
+    <div class="card">
+        <h2>📦 Packets/sec</h2>
+        <div id="pkts" class="value">0</div>
+    </div>
+
+    <div class="card">
+        <h2>📊 Bytes/sec</h2>
+        <div id="bytes" class="value">0</div>
+    </div>
+
+    <div class="card">
+        <h2>📐 Avg Packet Size</h2>
+        <div id="avg" class="value">0</div>
+    </div>
+
+    <div class="card">
+        <h2>🌐 Source IP Count</h2>
+        <div id="src" class="value">0</div>
+    </div>
+</div>
+
+</body>
+</html>

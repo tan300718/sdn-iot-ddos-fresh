@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 *.pkl
 *.pcap
+ml_env/
+__pycache__/
+*.pyc
+dashboard_data.json
